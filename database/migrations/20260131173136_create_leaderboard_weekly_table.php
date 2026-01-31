@@ -6,19 +6,23 @@ use Phinx\Migration\AbstractMigration;
 
 final class CreateLeaderboardWeeklyTable extends AbstractMigration
 {
-    /**
-     * Change Method.
-     *
-     * Write your reversible migrations using this method.
-     *
-     * More information on writing migrations is available here:
-     * https://book.cakephp.org/phinx/0/en/migrations.html#the-change-method
-     *
-     * Remember to call "create()" or "update()" and NOT "save()" when working
-     * with the Table class.
-     */
-    public function change(): void
+    public function up(): void
     {
+        $this->execute("CREATE TABLE `leaderboard_weekly` (
+            `week` VARCHAR(10) NOT NULL, -- Формат: YYYY-W## (например, 2026-W05)
+            `user_id` BIGINT NOT NULL PRIMARY KEY,
+            `target` ENUM('tg', 'vk') NOT NULL,
+            `score` INT NOT NULL,
+            `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`week`, `user_id`, `target`)
+        );");
 
+        $this->execute("CREATE INDEX `idx_leaderboard_weekly_score` ON `leaderboard_weekly` (`score` DESC);");
+    }
+
+    public function down(): void
+    {
+        $this->execute("DROP TABLE `leaderboard_weekly`;");
     }
 }
