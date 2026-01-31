@@ -10,7 +10,7 @@ final class CreateLeaderboardWeeklyTable extends AbstractMigration
     {
         $this->execute("CREATE TABLE `leaderboard_weekly` (
             `week` VARCHAR(10) NOT NULL, -- Формат: YYYY-W## (например, 2026-W05)
-            `user_id` BIGINT NOT NULL PRIMARY KEY,
+            `user_id` BIGINT NOT NULL,
             `target` ENUM('tg', 'vk') NOT NULL,
             `score` INT NOT NULL,
             `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

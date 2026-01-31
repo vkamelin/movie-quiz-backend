@@ -10,7 +10,7 @@ final class CreateLeaderboardMonthlyTable extends AbstractMigration
     {
         $this->execute("CREATE TABLE `leaderboard_monthly` (
             `month` VARCHAR(7) NOT NULL, -- Формат: YYYY-MM (например, 2026-02)
-            `user_id` BIGINT NOT NULL PRIMARY KEY,
+            `user_id` BIGINT NOT NULL,
             `target` ENUM('tg', 'vk') NOT NULL,
             `score` INT NOT NULL,
             `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
