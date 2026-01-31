@@ -1,0 +1,26 @@
+================================================================================
+ЛИЦЕНЗИЯ / LICENSE
+================================================================================
+
+© 2025 Камелин Виталий Олегович. Все права защищены.
+
+Данное программное обеспечение является собственностью автора и является
+конфиденциальным. Любое копирование, модификация, распространение,
+использование или продажа данного программного обеспечения без письменного
+разрешения правообладателя строго запрещены.
+
+Использование проекта разрешено только автору. Передача третьим лицам,
+распространение в открытом доступе, а также коммерческое использование без
+согласия автора запрещены.
+
+--------------------------------------------------------------------------------
+
+© 2025 Vitaliy Kamelin. All rights reserved.
+
+This software is proprietary and confidential.
+Unauthorized copying, modification, distribution, use or sale of this software,
+via any medium, is strictly prohibited.
+
+This project is intended for private use by the author only.
+Redistribution, sublicensing, or making it publicly available is not permitted
+without explicit written permission from the copyright holder.

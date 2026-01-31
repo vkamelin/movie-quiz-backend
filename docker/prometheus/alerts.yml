@@ -1,0 +1,24 @@
+groups:
+  - name: app-alerts
+    rules:
+      - alert: HighErrorRate
+        expr: rate(app_http_requests_errors_total[5m]) > 5
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          summary: High 5xx error rate
+      - alert: RateLimitHits
+        expr: rate(app_rate_limit_hits_total[5m]) > 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Frequent rate limit hits
+      - alert: QueueDelay
+        expr: histogram_quantile(0.95, rate(app_queue_delay_seconds_bucket[5m])) > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Queue processing delay too high

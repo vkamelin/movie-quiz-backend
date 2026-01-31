@@ -1,0 +1,31 @@
+groups:
+  - name: app-rules
+    rules:
+      - alert: ErrorRateHigh
+        expr: sum(rate(app_http_requests_errors_total[5m])) / sum(rate(app_http_requests_total[5m])) > 0.01
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Error rate > 1%"
+      - alert: HighP95Response
+        expr: histogram_quantile(0.95, sum(rate(app_http_request_duration_seconds_bucket[5m])) by (le)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p95 response time > 500ms"
+      - alert: DlqNotEmpty
+        expr: app_dlq_size > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DLQ has messages"
+      - alert: NoMetrics
+        expr: absent(app_http_requests_total)
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No metrics received"

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["refresh_token"],
+  "properties": {
+    "refresh_token": {"type": "string", "minLength": 10, "maxLength": 2048}
+  }
+}
+

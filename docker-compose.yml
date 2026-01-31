@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: "no"
+    volumes:
+      - ./:/var/www/html
+    expose:
+      - "9000"
+    depends_on:
+      - db
+      - redis
+
+  nginx:
+    image: nginx:stable-alpine
+    restart: "no"
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/var/www/html/public:ro
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    restart: "no"
+    ports:
+      - "6380:6379"
+
+volumes:
+  db_data:

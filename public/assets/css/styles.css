@@ -1,0 +1,299 @@
+*, html, body {
+    font-family: "Inter", Aptos, Helvetica, Arial, sans-serif !important;
+}
+
+code, pre {
+    font-family: "Martian Mono", monospace !important;
+}
+
+.nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
+}
+
+.nav-scroller .nav {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-bottom: 1rem;
+    margin-top: -1px;
+    overflow-x: auto;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-scroller .nav {
+    color: rgba(255, 255, 255, .75);
+}
+
+.nav-scroller .nav-link {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: .875rem;
+    color: #6c757d;
+}
+
+.nav-scroller .nav-link:hover {
+    color: #007bff;
+}
+
+.nav-scroller .active {
+    font-weight: 500;
+    color: #343a40;
+}
+
+.table-header {
+    display: flex !important;
+    align-content: center !important;
+    justify-content: space-between !important;
+}
+
+#checksTable td {
+    font-size: .75rem;
+}
+
+#checkData * {
+    font-family: "Martian Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+}
+
+.close.fileinput-remove {
+    --bs-btn-close-color: #000;
+    --bs-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e");
+    --bs-btn-close-opacity: 0.5;
+    --bs-btn-close-hover-opacity: 0.75;
+    --bs-btn-close-focus-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    --bs-btn-close-disabled-opacity: 0.25;
+    --bs-btn-close-white-filter: invert(1) grayscale(100%) brightness(200%);
+
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    padding: 0.25rem;
+    background-color: transparent;
+    border: 0;
+    opacity: var(--bs-btn-close-opacity);
+}
+
+.close.fileinput-remove:hover {
+    opacity: var(--bs-btn-close-hover-opacity);
+    cursor: pointer;
+}
+
+.close.fileinput-remove:focus {
+    outline: 0;
+    box-shadow: var(--bs-btn-close-focus-shadow);
+}
+
+.sidebar {
+    width: 100%;
+    min-height: 100vh;
+    background-color: transparent;
+    color: var(--bs-body-color);
+    padding: 0.5rem;
+    border-right: 1px solid var(--bs-border-color);
+    border-radius: 0;
+}
+
+.sidebar .nav-link {
+    color: var(--bs-body-color);
+}
+
+.main-content {
+    padding: 1rem;
+}
+
+.dataTables_empty {
+    color: #cccccc !important;
+}
+
+/* Telegram-like spoiler styling */
+tg-spoiler {
+    position: relative;
+    display: inline;
+    padding: 0 .2em;
+    border-radius: .25rem;
+    cursor: pointer;
+    color: transparent; /* hide text color */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone; /* keep background on wrapped lines */
+    transition: background-color .2s ease, color .2s ease, text-shadow .2s ease;
+    background: var(--tg-spoiler-bg);
+    text-shadow: 0 0 .6em var(--tg-spoiler-shadow); /* obscure glyph shapes */
+}
+
+[data-bs-theme="light"] tg-spoiler {
+    --tg-spoiler-bg: repeating-linear-gradient(135deg, rgba(0,0,0,.08) 0 8px, rgba(0,0,0,.12) 8px 16px);
+    --tg-spoiler-shadow: rgba(0,0,0,.6);
+}
+
+[data-bs-theme="dark"] tg-spoiler {
+    --tg-spoiler-bg: repeating-linear-gradient(135deg, rgba(255,255,255,.10) 0 8px, rgba(255,255,255,.14) 8px 16px);
+    --tg-spoiler-shadow: rgba(255,255,255,.8);
+}
+
+/* Reveal on hover/focus or when toggled with class */
+tg-spoiler:hover,
+tg-spoiler:focus,
+tg-spoiler.revealed {
+    color: inherit;
+    background: transparent;
+    text-shadow: none;
+}
+
+/* Select2 theme integration (light/dark via Bootstrap CSS vars) */
+.select2-container .select2-selection--single,
+.select2-container .select2-selection--multiple {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+    border: 1px solid var(--bs-border-color) !important;
+    border-radius: var(--bs-border-radius) !important;
+    min-height: calc(2.25rem + 2px);
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered,
+.select2-container .select2-selection--multiple .select2-selection__rendered {
+    color: var(--bs-body-color) !important;
+    line-height: 2.25rem;
+}
+
+.select2-container .select2-selection--single .select2-selection__placeholder,
+.select2-container .select2-selection--multiple .select2-selection__placeholder {
+    color: var(--bs-secondary-color, #6c757d) !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__arrow b {
+    border-color: var(--bs-body-color) transparent transparent transparent !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: rgba(var(--bs-secondary-rgb, 108,117,125), .15) !important;
+    border: 1px solid var(--bs-border-color) !important;
+    color: var(--bs-body-color) !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: var(--bs-body-color) !important;
+    opacity: .7;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    opacity: 1;
+}
+
+.select2-dropdown {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+    border: 1px solid var(--bs-border-color) !important;
+}
+
+.select2-results__option {
+    color: var(--bs-body-color) !important;
+}
+
+/* Responsive tables: show horizontal scroll only on tablet/mobile */
+@media (min-width: 992px) { /* >= lg: desktop */
+    .table-responsive {
+        overflow-x: visible !important; /* prevent unnecessary horizontal scrollbar */
+        -webkit-overflow-scrolling: auto; /* reset touch scrolling hint */
+    }
+}
+
+/* Dark theme: outline buttons default to white border + text when inactive */
+[data-bs-theme="dark"] .btn-outline-primary:not(:hover):not(:active):not(.active):not(.show):not(:focus),
+[data-bs-theme="dark"] .btn-outline-secondary:not(:hover):not(:active):not(.active):not(.show):not(:focus),
+[data-bs-theme="dark"] .btn-outline-success:not(:hover):not(:active):not(.active):not(.show):not(:focus),
+[data-bs-theme="dark"] .btn-outline-info:not(:hover):not(:active):not(.show):not(:focus),
+[data-bs-theme="dark"] .btn-outline-warning:not(:hover):not(:active):not(.show):not(:focus),
+[data-bs-theme="dark"] .btn-outline-danger:not(:hover):not(:active):not(.show):not(:focus),
+[data-bs-theme="dark"] .btn-outline-light:not(:hover):not(:active):not(.show):not(:focus),
+[data-bs-theme="dark"] .btn-outline-dark:not(:hover):not(:active):not(.show):not(:focus) {
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+}
+
+.select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: var(--bs-primary) !important;
+    color: #fff !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+    border: 1px solid var(--bs-border-color) !important;
+    border-radius: var(--bs-border-radius) !important;
+}
+
+/* Ensure section layout stays neat with Select2 */
+#selectedUsersSection {
+    display: block;
+}
+
+/* Submenu hover style: keep light theme clean (no gray fill) */
+[data-bs-theme="light"] .submenu .btn.btn-outline-secondary:hover,
+[data-bs-theme="light"] .submenu .btn.btn-outline-secondary:focus,
+[data-bs-theme="light"] .submenu .btn.btn-outline-secondary:active {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: var(--bs-body-color) !important;
+    border-color: var(--bs-border-color) !important;
+}
+
+/* Submenu active link should not be bold */
+.submenu .nav-link.active {
+    font-weight: 400 !important; /* Normalize weight for active item */
+}
+
+/* Flat dashboard polish */
+.kpi-card { background: transparent !important; }
+
+/* Make cards flat and minimal */
+.card { box-shadow: none !important; border: 1px solid var(--bs-border-color) !important; }
+.card-header { background: transparent !important; }
+
+/* Nav pills in sidebar: outline active state */
+.nav-pills .nav-link { border: 1px solid transparent; border-radius: var(--bs-border-radius); }
+.nav-pills .nav-link:hover { background-color: rgba(var(--bs-primary-rgb, 13,110,253), .05); }
+.nav-pills .nav-link.active {
+    background: transparent !important;
+    color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+/* Dark theme: main menu (sidebar/offcanvas) links are white text with white outline when active/hover */
+[data-bs-theme="dark"] .sidebar .nav-link,
+[data-bs-theme="dark"] .offcanvas .nav-link {
+    color: #ffffff !important;
+}
+[data-bs-theme="dark"] .sidebar .nav-link:hover,
+[data-bs-theme="dark"] .offcanvas .nav-link:hover,
+[data-bs-theme="dark"] .sidebar .nav-link:focus,
+[data-bs-theme="dark"] .offcanvas .nav-link:focus {
+    border-color: #ffffff !important;
+}
+[data-bs-theme="dark"] .sidebar .nav-link.active,
+[data-bs-theme="dark"] .offcanvas .nav-link.active {
+    background: transparent !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+}
+
+/* Flatten navbar */
+.navbar { box-shadow: none !important; }
+
+.kpi-icon {
+    font-size: 2rem;
+    opacity: .85;
+}
+
+.card-header.bg-transparent {
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+/* Chart canvas should stretch nicely */
+#statusChart {
+    width: 100% !important;
+}

@@ -1,0 +1,83 @@
+{
+  "name": "vkamelin/telegram-bot",
+  "description": "Минималистичный каркас для Telegram-ботов, API и Dashboard на Slim 4 + PDO. Проект приватный, используется только владельцем.",
+  "type": "project",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Виталий",
+      "email": "v.kamelin@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "license": "proprietary",
+  "homepage": "https://devbot.pro",
+  "keywords": [
+    "telegram",
+    "bot",
+    "api",
+    "dashboard",
+    "slim",
+    "php"
+  ],
+  "require": {
+    "php": "^8.3",
+    "ext-zip": "*",
+    "ext-pdo": "*",
+    "ext-curl": "*",
+    "ext-redis": "*",
+    "ext-fileinfo": "*",
+    "ext-readline": "*",
+    "slim/slim": "^4.12",
+    "slim/psr7": "^1.7",
+    "guzzlehttp/guzzle": "^7.9",
+    "vlucas/phpdotenv": "^5.6",
+    "monolog/monolog": "^2.9",
+    "firebase/php-jwt": "^6.11",
+    "longman/telegram-bot": "^0.83.1",
+    "vlsv/telegram-data-validator": "^1.0",
+    "robmorgan/phinx": "^0.15",
+    "php-http/httplug": "^2.4",
+    "php-di/php-di": "^7.0"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-latest",
+    "phpunit/phpunit": "^10.5",
+    "friendsofphp/php-cs-fixer": "^3.54",
+    "phpstan/phpstan": "^1.11",
+    "vimeo/psalm": "^5.22"
+  },
+  "suggest": {
+    "open-telemetry/opentelemetry": "For tracing via OpenTelemetry",
+    "promphp/prometheus_client_php": "Expose metrics for Prometheus",
+    "phpoffice/phpspreadsheet": "Spreadsheet export features"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    },
+    "files": [
+      "app/Helpers/url.php"
+    ]
+  },
+  "scripts": {
+    "serve": "php -S 0.0.0.0:8080 -t public",
+    "cs": "php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff",
+    "cs:fix": "php-cs-fixer fix --config=.php-cs-fixer.php",
+    "tests": "phpunit",
+    "analyse": "phpstan analyse --memory-limit=1G",
+    "migrate": "vendor/bin/phinx migrate -c phinx.php",
+    "build:css": "npx tailwindcss -c tailwind.config.js -i assets/css/tailwind.css -o public/assets/css/tailwind.css --minify",
+    "arch:check": "php tools/ci/validate-architecture.php"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "8.3.0"
+    },
+    "allow-plugins": {
+      "php-http/discovery": true,
+      "tbachert/spi": true
+    }
+  }
+}
