@@ -7,6 +7,7 @@ namespace App\Helpers;
 use PDO;
 use PDOException;
 use RuntimeException;
+use Logger;
 
 /**
  * Класс для работы с базой данных
