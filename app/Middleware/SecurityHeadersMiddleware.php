@@ -52,6 +52,8 @@ class SecurityHeadersMiddleware
         if ($this->cors !== []) {
             $origin = $request->getHeaderLine('Origin');
             $allowedOrigins = $this->cors['origins'] ?? [];
+            
+            // Allow if empty origins (development) or origin is in allowed list
             if ($origin !== '' && (empty($allowedOrigins) || in_array($origin, $allowedOrigins, true))) {
                 $response = $response->withHeader('Access-Control-Allow-Origin', $origin)
                     ->withHeader('Access-Control-Allow-Credentials', 'true');

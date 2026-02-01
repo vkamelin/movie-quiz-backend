@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Dotenv\Dotenv;
 
-Dotenv::createImmutable(dirname(__DIR__, 2))->safeLoad();
+Dotenv::createImmutable(dirname(__DIR__))->safeLoad();
 
 /**
  * Собирает DSN строку для подключения к БД из компонентов окружения.
