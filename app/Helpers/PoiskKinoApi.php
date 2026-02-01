@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use Exception;
+use GuzzleHttp\Exception\GuzzleException;
+
 /**
  * Класс для работы с API ПоискКино (poiskkino.dev)
  * 
@@ -786,7 +789,7 @@ class PoiskKinoApi
      * Выполнить запрос к API
      * 
      * @return array Ответ API
-     * @throws Exception|\GuzzleHttp\Exception\GuzzleException При ошибке запроса
+     * @throws Exception|GuzzleException При ошибке запроса
      */
     public function execute(): array
     {
@@ -833,7 +836,7 @@ class PoiskKinoApi
                 $message = "HTTP {$statusCode}: {$body}";
             }
             throw new Exception("Ошибка запроса к API: {$message}");
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new Exception("Ошибка выполнения запроса: {$e->getMessage()}");
         }
     }
