@@ -120,6 +120,14 @@ function registerRouteGroup(
             continue;
         }
 
+        // Nested group without middleware (routes only)
+        if (is_string($key) && $key !== '' && isset($route['routes']) && !isset($route['middleware'])) {
+            $group->group($key, function (\Slim\Routing\RouteCollectorProxy $g) use ($container, $route) {
+                registerRouteGroup($g, $container, $route['routes'], '');
+            });
+            continue;
+        }
+
         // Nested routes without middleware (key can be '' or numeric)
         if (is_string($key) && isset($route[0]) && is_array($route[0])) {
             registerRouteGroup($group, $container, $route, '');

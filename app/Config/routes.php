@@ -123,7 +123,7 @@ return [
         'routes' => [
             'vk' => [
                 'routes' => [
-                    ['POST', '/auth', VkAuthController::class],
+                    ['POST', '/auth', [VkAuthController::class, 'auth']],
                     'protected' => [
                         'middleware' => [
                             \App\Middleware\JwtMiddleware::class,
