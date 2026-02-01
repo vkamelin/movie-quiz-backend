@@ -24,34 +24,49 @@ class VkController
     function validateVkSign(array $params): bool
     {
         $secret = $_ENV['VK_APP_SECRET'];
-
         if (empty($secret)) {
             return false;
         }
 
-        $sign = $params['sign'] ?? null;
-        if (!$sign) {
+        // Обязательные параметры
+        $payload = $params['payload'] ?? null; // это request_id
+        $sign    = $params['sign'] ?? null;
+        $ts      = $params['ts'] ?? null;
+
+        if (!$payload || !$sign || !$ts) {
             return false;
         }
 
-        unset($params['sign']);
-
-        // Отфильтровываем только vk_* параметры
-        $filtered = [];
-        foreach ($params as $key => $value) {
-            if (substr($key, 0, 3) === 'vk_') {
-                $filtered[$key] = $value;
-            }
+        // Получаем app_id из конфига (или .env)
+        $appId = $_ENV['VK_APP_ID']; // ← должен быть задан!
+        if (!$appId) {
+            return false;
         }
 
-        ksort($filtered);
-        $str = '';
-        foreach ($filtered as $key => $value) {
-            $str .= $key . '=' . $value;
+        // Извлекаем user_id из payload (если payload = "user_id=123")
+        // Альтернатива: передавать user_id отдельно, но проще парсить
+        parse_str($payload, $payloadData);
+        $userId = $payloadData['user_id'] ?? null;
+        if (!$userId) {
+            return false;
         }
-        $str .= $secret;
 
-        return hash_hmac('sha256', $str, $secret) === $sign;
+        // Формируем хеш-параметры как в документации
+        $hashParams = [
+            'app_id' => (int)$appId,
+            'user_id' => (int)$userId,
+            'request_id' => $payload, // ← именно так!
+            'ts' => (int)$ts,
+        ];
+
+        ksort($hashParams);
+        $queryString = http_build_query($hashParams);
+
+        // Генерируем подпись: HMAC-SHA256 + base64 + безопасный URL-код
+        $computedSign = hash_hmac('sha256', $queryString, $secret, true);
+        $computedSign = rtrim(strtr(base64_encode($computedSign), '+/', '-_'), '=');
+
+        return hash_equals($computedSign, $sign);
     }
 
     protected function success(Res $response, array $data): MessageInterface|Res
