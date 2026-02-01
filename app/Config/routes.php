@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Controllers\Api\AuthController as ApiAuthController;
-use App\Controllers\Api\HealthController;
-use App\Controllers\Api\MeController;
-use App\Controllers\Api\PromoCodeController;
-use App\Controllers\Api\UsersController;
+use App\Controllers\Api\TgAuthController;
+use App\Controllers\Api\VkAuthController;
 use App\Controllers\Dashboard\AuthController;
 use App\Controllers\Dashboard\ChatJoinRequestsController;
 use App\Controllers\Dashboard\ChatMembersController;
@@ -127,23 +124,15 @@ return [
             \App\Middleware\TelegramInitDataMiddleware::class,
         ],
         'routes' => [
-            ['GET', '/health', HealthController::class],
-            ['POST', '/auth/login', [ApiAuthController::class, 'login']],
-            ['POST', '/auth/refresh', [ApiAuthController::class, 'refresh']],
+            ['POST', '/vk/auth', VkAuthController::class],
+            ['POST', '/tg/auth', TgAuthController::class],
             'protected' => [
                 'middleware' => [
                     \App\Middleware\JwtMiddleware::class,
                     \App\Middleware\RateLimitMiddleware::class,
                 ],
                 'routes' => [
-                    ['GET', '/me', [MeController::class, 'show']],
-                    ['GET', '/users', [UsersController::class, 'list']],
-                    ['POST', '/users', [UsersController::class, 'create']],
-                    ['POST', '/promo-codes/upload', [PromoCodeController::class, 'upload']],
-                    ['GET', '/promo-codes', [PromoCodeController::class, 'listCodes']],
-                    ['POST', '/promo-codes/issue', [PromoCodeController::class, 'issue']],
-                    ['GET', '/promo-code-issues', [PromoCodeController::class, 'issues']],
-                    ['GET', '/promo-code-batches', [PromoCodeController::class, 'batches']],
+
                 ],
             ],
         ],
