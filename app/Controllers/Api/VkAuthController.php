@@ -13,26 +13,31 @@ class VkAuthController extends VkController
     {
         $params = $request->getQueryParams();
 
-        if (!$this->validateVkSign($params)) {
-            $response->getBody()->write(json_encode(['error' => 'Invalid signature']));
-            return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+        // Обязательные параметры
+        if (!isset($params['data'], $params['sign'], $params['sign_ts'])) {
+            return $this->error($response, 'Missing required parameters', 400);
         }
 
-        $userId = (int)($params['vk_user_id'] ?? 0);
+        // Для валидации подписи передаём все параметры, как есть
+        if (!$this->validateVkSign($params)) {
+            return $this->error($response, 'Invalid signature', 401);
+        }
+
+        // Парсим data, чтобы получить vk_user_id
+        parse_str($params['data'], $dataParsed);
+        $userId = (int)($dataParsed['vk_user_id'] ?? 0);
 
         if (!$userId) {
-            $response->getBody()->write(json_encode(['error' => 'User ID not found']));
-            return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+            return $this->error($response, 'User ID not found in data', 400);
         }
 
         $payload = [
             'user_id' => $userId,
-            'exp' => time() + 3600 // 1 час
+            'exp' => time() + 3600
         ];
 
         $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
 
-        $response->getBody()->write(json_encode(['token' => $token]));
-        return $response->withHeader('Content-Type', 'application/json');
+        return $this->success($response, ['token' => $token]);
     }
 }
