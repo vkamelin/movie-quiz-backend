@@ -32,7 +32,8 @@ class Kernel
         Commands\StreamResetCommand::class,
         Commands\StreamDlqCommand::class,
         Commands\SupervisorNotificationsCommand::class,
-        Commands\ImportMoviesCommand::class
+        Commands\ImportMoviesCommand::class,
+        Commands\SetMovieStatusCommand::class
     ];
 
     /**
