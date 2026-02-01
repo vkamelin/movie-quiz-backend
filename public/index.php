@@ -33,6 +33,11 @@ $app = AppFactory::create();
 $app->add(new RequestIdMiddleware());
 $app->add(new RequestSizeLimitMiddleware($config['request_size_limit'], $config['request_size_overrides'] ?? []));
 $app->addBodyParsingMiddleware();
+
+// === Error handler (RFC7807) ===
+$app->add(new \App\Middleware\ErrorMiddleware($config['debug']));
+
+// === Security Headers + CORS (должен быть последним) ===
 $app->add(new SecurityHeadersMiddleware([
     'cors' => $config['cors'],
     'csp' => [
@@ -43,9 +48,6 @@ $app->add(new SecurityHeadersMiddleware([
     ],
     'x_frame_options' => 'DENY',
 ]));
-
-// === Error handler (RFC7807) ===
-$app->add(new \App\Middleware\ErrorMiddleware($config['debug']));
 
 // === Регистрация маршрутов из конфига ===
 $routesConfig = require __DIR__ . '/../app/Config/routes.php';
