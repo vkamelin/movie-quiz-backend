@@ -1,0 +1,14 @@
+<svg width="300" height="450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="450" fill="#f8f9fa"/>
+  <rect x="50" y="150" width="200" height="150" fill="#dee2e6" rx="10"/>
+  <path d="M75 200 L125 175 L125 250 L75 225 Z" fill="#6c757d"/>
+  <path d="M125 200 L175 175 L175 250 L125 225 Z" fill="#6c757d"/>
+  <circle cx="100" cy="280" r="3" fill="#6c757d"/>
+  <circle cx="150" cy="280" r="3" fill="#6c757d"/>
+  <circle cx="125" cy="290" r="3" fill="#6c757d"/>
+  <circle cx="175" cy="290" r="3" fill="#6c757d"/>
+  <rect x="80" y="310" width="140" height="2" fill="#6c757d" opacity="0.5"/>
+  <rect x="90" y="320" width="120" height="2" fill="#6c757d" opacity="0.3"/>
+  <rect x="95" y="330" width="110" height="2" fill="#6c757d" opacity="0.2"/>
+  <text x="150" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6c757d">Нет постера</text>
+</svg>

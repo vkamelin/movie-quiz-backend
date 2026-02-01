@@ -36,7 +36,8 @@
 
 ## CORS и CSP
 - `CORS_ORIGINS`: список разрешённых origin через запятую (например, `https://example.com,https://app.example.com`). `*` для разработки.
-- `CSP_SCRIPT_SRC`, `CSP_STYLE_SRC`, `CSP_FONT_SRC`: источники для CSP (по умолчанию разрешены популярные CDN, можно ужесточать).
+- `CSP_SCRIPT_SRC`, `CSP_STYLE_SRC`, `CSP_FONT_SRC`, `CSP_IMG_SRC`: источники для CSP (по умолчанию разрешены популярные CDN, можно ужесточать).
+- `CSP_IMG_SRC`: источники изображений (по умолчанию `https: data: blob:` - разрешает все HTTPS изображения, data URL и blob URL)
 
 ## Rate‑limit и размер запроса
 - `RATE_LIMIT_BUCKET`: `ip` или `user` — по чему лимитировать.

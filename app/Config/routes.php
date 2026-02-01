@@ -12,6 +12,7 @@ use App\Controllers\Dashboard\HomeController;
 use App\Controllers\Dashboard\InvoicesController;
 use App\Controllers\Dashboard\LogsController;
 use App\Controllers\Dashboard\MessagesController;
+use App\Controllers\Dashboard\MoviesController;
 use App\Controllers\Dashboard\PanelUsersController;
 use App\Controllers\Dashboard\PreCheckoutController;
 use App\Controllers\Dashboard\PromoCodesController;
@@ -115,6 +116,13 @@ return [
                 ['GET', '/referrals', [ReferralsController::class, 'index']],
                 ['POST', '/referrals/data', [ReferralsController::class, 'data']],
                 ['POST', '/referrals/grouped', [ReferralsController::class, 'grouped']],
+                ['GET', '/movies', [MoviesController::class, 'index']],
+                ['POST', '/movies/data', [MoviesController::class, 'data']],
+                ['POST', '/movies/search-by-id', [MoviesController::class, 'searchById']],
+                ['GET', '/movies/{id:\d+}', [MoviesController::class, 'view']],
+                ['GET', '/movies/{id:\d+}/edit', [MoviesController::class, 'edit']],
+                ['POST', '/movies/{id:\d+}', [MoviesController::class, 'update']],
+                ['POST', '/movies/bulk-status', [MoviesController::class, 'bulkStatus']],
             ],
         ],
     ],

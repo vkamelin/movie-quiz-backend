@@ -93,6 +93,18 @@ $menu = [
         ],
     ],
     [
+        'url'      => '/dashboard/movies',
+        'title'    => 'Фильмы',
+        'icon'     => 'bi bi-film',
+        'children' => [
+            [
+                'url'   => '/dashboard/movies',
+                'title' => 'Список фильмов',
+                'icon'  => 'bi bi-collection',
+            ],
+        ],
+    ],
+    [
         'url'      => '/dashboard/sessions',
         'title'    => 'Администрирование',
         'icon'     => 'bi bi-gear',
