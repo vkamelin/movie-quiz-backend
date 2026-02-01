@@ -13,6 +13,9 @@ final class CreateMoviesGenresTable extends AbstractMigration
             `movie_id` INT UNSIGNED NOT NULL,
             `genre_id` INT UNSIGNED NOT NULL
         );");
+
+        $this->execute("CREATE INDEX idx_movies_genres_movie_id ON movies_genres (movie_id);");
+        $this->execute("CREATE INDEX idx_movies_genres_genre_id ON movies_genres (genre_id);");
     }
 
     public function down(): void
