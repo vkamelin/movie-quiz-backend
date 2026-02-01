@@ -281,7 +281,7 @@ function createMovieCard(movie) {
     const col = document.createElement('div');
     col.className = 'col-xl-3 col-lg-4 col-md-6';
     
-    const posterUrl = movie.poster_url_preview || movie.poster_url || '/assets/images/no-poster.webp';
+    const posterUrl = movie.poster_url || movie.poster_url_preview || '/assets/images/no-poster.webp';
     const statusClass = movie.status ? 'bg-success' : 'bg-danger';
     const statusText = movie.status ? 'Активен' : 'Неактивен';
     const newStatus = movie.status ? 0 : 1;
