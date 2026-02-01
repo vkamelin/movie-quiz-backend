@@ -33,7 +33,8 @@ class Kernel
         Commands\StreamDlqCommand::class,
         Commands\SupervisorNotificationsCommand::class,
         Commands\ImportMoviesCommand::class,
-        Commands\SetMovieStatusCommand::class
+        Commands\SetMovieStatusCommand::class,
+        Commands\SetMovieStatusByCountryCommand::class
     ];
 
     /**
