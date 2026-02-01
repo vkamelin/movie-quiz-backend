@@ -6,8 +6,52 @@ let isLoading = false;
 let searchTimeout;
 let selectedMovies = new Set();
 
-function loadMovies(page = 0, search = '') {
+// Функции для работы с URL параметрами
+function getUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userPage = parseInt(urlParams.get('page')) || 1; // читаем как для пользователя (1-based)
+    const internalPage = userPage > 1 ? userPage - 1 : 0; // конвертируем во внутреннее (0-based)
+    return {
+        page: internalPage,
+        search: urlParams.get('search') || ''
+    };
+}
+
+function updateUrlParams(page, search = '') {
+    const url = new URL(window.location);
+    const params = new URLSearchParams(url.search);
+    
+    // Конвертируем внутреннюю страницу (0-based) в пользовательскую (1-based) для URL
+    const userPage = page + 1;
+    
+    // Обновляем страницу
+    if (userPage > 1) {
+        params.set('page', userPage.toString());
+    } else {
+        params.delete('page');
+    }
+    
+    // Обновляем поиск
+    if (search.trim()) {
+        params.set('search', search.trim());
+    } else {
+        params.delete('search');
+    }
+    
+    // Обновляем URL без перезагрузки страницы
+    url.search = params.toString();
+    window.history.replaceState({}, '', url.toString());
+}
+
+function loadMovies(page = null, search = '') {
     console.log('Загружаем фильмы:', { page, search });
+    
+    // Если страница не указана, получаем из URL параметров
+    if (page === null) {
+        const urlParams = getUrlParams();
+        page = urlParams.page;
+        search = search || urlParams.search;
+    }
     
     if (isLoading) {
         console.log('Уже загружается, пропускаем');
@@ -81,6 +125,9 @@ function loadMovies(page = 0, search = '') {
         
         console.log('Статистика:', { currentPage, totalRecords, totalPages, dataLength: data.data.length });
         
+        // Обновляем URL с новыми параметрами
+        updateUrlParams(page, search);
+        
         // Отображаем данные если они есть
         if (data.data.length > 0) {
             console.log('Отображаем', data.data.length, 'фильмов');
@@ -133,6 +180,12 @@ function loadMovies(page = 0, search = '') {
         
         // Обновляем поле ввода страницы
         updatePageInput(page);
+        
+        // Обновляем поле поиска если нужно
+        const searchInput = document.getElementById('moviesSearch');
+        if (searchInput && searchInput.value !== search) {
+            searchInput.value = search;
+        }
     })
     .catch(error => {
         spinner.style.display = 'none';
@@ -141,6 +194,8 @@ function loadMovies(page = 0, search = '') {
         showAlert('Ошибка загрузки фильмов', 'danger');
     });
 }
+
+// ... остальные функции остаются без изменений ...
 
 function addInactiveDivider(movies) {
     const grid = document.getElementById('moviesGrid');
@@ -242,7 +297,8 @@ function updatePagination(currentPage, totalPages, totalRecords) {
             e.preventDefault();
             const page = parseInt(link.dataset.page);
             if (page >= 0 && page < totalPages && page !== currentPage) {
-                loadMovies(page, document.getElementById('moviesSearch').value.trim());
+                const currentSearch = document.getElementById('moviesSearch').value.trim();
+                loadMovies(page, currentSearch);
             }
         });
     });
@@ -504,22 +560,25 @@ function bulkUpdateStatus(action) {
                     const statusBadge = cardElement.querySelector('.status-toggle');
                     const toggleBtn = cardElement.querySelector('.toggle-status');
                     
+                    let newStatus;
                     if (action === 'activate') {
                         statusBadge.className = 'badge bg-success position-absolute status-toggle';
                         statusBadge.textContent = 'Активен';
                         toggleBtn.dataset.currentStatus = '1';
                         toggleBtn.innerHTML = '<i class="bi bi-toggles"></i> Деактивировать';
                         cardElement.classList.remove('inactive-movie');
+                        newStatus = 1;
                     } else if (action === 'deactivate') {
                         statusBadge.className = 'badge bg-danger position-absolute status-toggle';
                         statusBadge.textContent = 'Неактивен';
                         toggleBtn.dataset.currentStatus = '0';
                         toggleBtn.innerHTML = '<i class="bi bi-toggles"></i> Активировать';
                         cardElement.classList.add('inactive-movie');
+                        newStatus = 0;
                     } else if (action === 'toggle') {
                         const currentStatus = parseInt(toggleBtn.dataset.currentStatus);
-                        const newStatus = currentStatus ? 0 : 1;
-                        if (newStatus) {
+                        const toggledStatus = currentStatus ? 0 : 1;
+                        if (toggledStatus) {
                             statusBadge.className = 'badge bg-success position-absolute status-toggle';
                             statusBadge.textContent = 'Активен';
                             toggleBtn.dataset.currentStatus = '1';
@@ -532,6 +591,7 @@ function bulkUpdateStatus(action) {
                             toggleBtn.innerHTML = '<i class="bi bi-toggles"></i> Активировать';
                             cardElement.classList.add('inactive-movie');
                         }
+                        newStatus = toggledStatus;
                     }
                     
                     // Обновляем атрибут data-status
@@ -620,7 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const search = this.value.trim();
             
             searchTimeout = setTimeout(() => {
-                // При поиске всегда начинаем с первой страницы
+                // При поиске всегда начинаем с первой страницы, но с сохранением поискового запроса
                 loadMovies(0, search);
             }, 500);
         });
@@ -713,8 +773,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('bulkActivate').addEventListener('click', () => bulkUpdateStatus('activate'));
     document.getElementById('bulkDeactivate').addEventListener('click', () => bulkUpdateStatus('deactivate'));
     
-    // Загрузка первых фильмов при загрузке страницы
-    loadMovies();
+    // Обработчик для кнопок браузера назад/вперед
+    window.addEventListener('popstate', function(event) {
+        // При изменении URL через браузерные кнопки назад/вперед
+        const urlParams = getUrlParams();
+        loadMovies(urlParams.page, urlParams.search);
+    });
+    
+    // Загрузка фильмов на основе URL параметров
+    loadMovies(); // loadMovies() без параметров загрузит данные из URL
 });
 
 // Функция обновления поля ввода страницы
@@ -750,9 +817,10 @@ function searchMovieById(movieId) {
     .then(response => response.json())
     .then(data => {
         if (data.found) {
-            // Переходим на нужную страницу
+            // Переходим на нужную страницу с сохранением поискового запроса
             const targetPage = Math.floor(data.position / recordsPerPage);
-            loadMovies(targetPage, document.getElementById('moviesSearch').value.trim());
+            const currentSearch = document.getElementById('moviesSearch').value.trim();
+            loadMovies(targetPage, currentSearch);
             
             // После загрузки страницы прокрутим к фильму
             setTimeout(() => {
