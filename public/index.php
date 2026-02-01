@@ -122,8 +122,8 @@ function registerRouteGroup(
 
         // Nested group without middleware (routes only)
         if (is_string($key) && $key !== '' && isset($route['routes']) && !isset($route['middleware'])) {
-            $group->group($key, function (\Slim\Routing\RouteCollectorProxy $g) use ($container, $route) {
-                registerRouteGroup($g, $container, $route['routes'], '');
+            $group->group($key, function (\Slim\Routing\RouteCollectorProxy $g) use ($container, $route, $prefix) {
+                registerRouteGroup($g, $container, $route['routes'], $prefix . '/' . $key);
             });
             continue;
         }

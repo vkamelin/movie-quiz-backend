@@ -121,35 +121,25 @@ return [
 
     'api' => [
         'routes' => [
+            ['POST', '/vk/auth', [VkAuthController::class, 'auth']],
             'vk' => [
+                'middleware' => [
+                    \App\Middleware\JwtMiddleware::class,
+                    \App\Middleware\RateLimitMiddleware::class,
+                ],
                 'routes' => [
-                    ['POST', '/auth', [VkAuthController::class, 'auth']],
-                    'protected' => [
-                        'middleware' => [
-                            \App\Middleware\JwtMiddleware::class,
-                            \App\Middleware\RateLimitMiddleware::class,
-                        ],
-                        'routes' => [
 
-                        ],
-                    ],
                 ],
             ],
+            ['POST', '/tg/auth', TgAuthController::class],
             'tg' => [
                 'middleware' => [
                     \App\Middleware\TelegramInitDataMiddleware::class,
+                    \App\Middleware\JwtMiddleware::class,
+                    \App\Middleware\RateLimitMiddleware::class,
                 ],
                 'routes' => [
-                    ['POST', '/auth', TgAuthController::class],
-                    'protected' => [
-                        'middleware' => [
-                            \App\Middleware\JwtMiddleware::class,
-                            \App\Middleware\RateLimitMiddleware::class,
-                        ],
-                        'routes' => [
 
-                        ],
-                    ],
                 ],
             ],
         ],
