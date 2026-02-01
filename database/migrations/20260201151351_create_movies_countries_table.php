@@ -15,8 +15,8 @@ final class CreateMoviesCountriesTable extends AbstractMigration
         );");
 
         // indexes
-        $this->execute("CREATE INDEX idx_movies_countries_movie_id ON countries (movie_id);");
-        $this->execute("CREATE INDEX idx_movies_countries_country_id ON countries (country_id);");
+        $this->execute("CREATE INDEX idx_movies_countries_movie_id ON movies_countries (movie_id);");
+        $this->execute("CREATE INDEX idx_movies_countries_country_id ON movies_countries (country_id);");
     }
 
     public function down(): void
