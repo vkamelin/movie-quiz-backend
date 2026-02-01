@@ -122,12 +122,17 @@ return [
     'api' => [
         'routes' => [
             'vk' => [
-                'middleware' => [
-                    \App\Middleware\JwtMiddleware::class,
-                    \App\Middleware\RateLimitMiddleware::class,
-                ],
                 'routes' => [
                     ['POST', '/auth', VkAuthController::class],
+                    'protected' => [
+                        'middleware' => [
+                            \App\Middleware\JwtMiddleware::class,
+                            \App\Middleware\RateLimitMiddleware::class,
+                        ],
+                        'routes' => [
+
+                        ],
+                    ],
                 ],
             ],
             'tg' => [
