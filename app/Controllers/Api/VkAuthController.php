@@ -24,7 +24,7 @@ class VkAuthController extends VkController
         }
 
         // Парсим data, чтобы получить vk_user_id
-        parse_str($params['data'], $dataParsed);
+        parse_str($params['payload'], $dataParsed);
         $userId = (int)($dataParsed['vk_user_id'] ?? 0);
 
         if (!$userId) {
