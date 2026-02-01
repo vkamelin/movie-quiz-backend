@@ -14,7 +14,7 @@ class VkAuthController extends VkController
         $params = $request->getQueryParams();
 
         // Обязательные параметры
-        if (!isset($params['payload'], $params['sign'], $params['sign_ts'])) {
+        if (!isset($params['payload'], $params['sign'], $params['ts'])) {
             return $this->error($response, 'Missing required parameters', 400);
         }
 
