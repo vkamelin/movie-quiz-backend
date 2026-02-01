@@ -24,6 +24,7 @@ final class CreateMoviesTable extends AbstractMigration
             `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         );");
 
+        $this->execute("CREATE UNIQUE INDEX `idx_movies_kinopoisk_id` ON `movies` (`kinopoisk_id`);");
         $this->execute("CREATE INDEX `idx_movies_status` ON `movies` (`status`);");
     }
 
