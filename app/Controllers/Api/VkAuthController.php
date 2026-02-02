@@ -9,22 +9,15 @@ use Psr\Http\Message\ServerRequestInterface as Req;
 
 class VkAuthController extends VkController
 {
-    public function auth(Req $request, Res $response)
+    public function auth(Req $request, Res $response): MessageInterface|Res
     {
-        $params = $request->getQueryParams();
-
-        // Обязательные параметры
-        if (!isset($params['payload'], $params['sign'], $params['ts'])) {
-            return $this->error($response, 'Missing required parameters', 400);
-        }
-
         // Для валидации подписи передаём все параметры, как есть
-        if (!$this->validateVkSign($params)) {
+        if (!$this->validateVkSign($request)) {
             return $this->error($response, 'Invalid signature', 401);
         }
 
         // Парсим data, чтобы получить user_id
-        $data = $this->parsePayload($params['payload']);
+        $data = $this->getPayload($request);
         $userId = (int)($data['user_id'] ?? 0);
 
         if (!$userId) {
@@ -39,17 +32,5 @@ class VkAuthController extends VkController
         $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
 
         return $this->success($response, ['token' => $token]);
-    }
-
-    private function parsePayload(string $payload): array
-    {
-        $data = [];
-        $payloadData = explode(';', $payload);
-        foreach ($payloadData as $item) {
-            $value = explode('=', $item);
-            $data[$value[0]] = $value[1];
-        }
-
-        return $data;
     }
 }

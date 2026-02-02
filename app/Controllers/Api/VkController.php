@@ -2,8 +2,10 @@
 
 namespace App\Controllers\Api;
 
+use App\Helpers\Logger;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface as Res;
+use Psr\Http\Message\ServerRequestInterface as Req;
 
 /**
  * Базовый контроллер для API миниаппа для VK
@@ -18,22 +20,25 @@ class VkController
     /**
      * Валидация подписи VK
      *
-     * @param array $params Параметры пользователя VK
+     * @param Req $request
      * @return bool
      */
-    function validateVkSign(array $params): bool
+    function validateVkSign(Req $request): bool
     {
+        $params = $request->getQueryParams();
+
+        // Обязательные параметры
+        if (!isset($params['payload'], $params['sign'], $params['ts'])) {
+            Logger::error('Missing required parameters', $params);
+            return false;
+        }
+
         $secret = $_ENV['VK_APP_SECRET'];
         if (empty($secret)) {
             return false;
         }
 
-        // Обязательные параметры
-        $payload = $params['payload'] ?? null; // это request_id
-        $sign    = $params['sign'] ?? null;
-        $ts      = $params['ts'] ?? null;
-
-        if (!$payload || !$sign || !$ts) {
+        if (!$params['payload'] || !$params['sign'] || !$params['ts']) {
             return false;
         }
 
@@ -43,20 +48,12 @@ class VkController
             return false;
         }
 
-        // Извлекаем user_id из payload (если payload = "user_id=123")
-        // Альтернатива: передавать user_id отдельно, но проще парсить
-        parse_str($payload, $payloadData);
-        $userId = $payloadData['user_id'] ?? null;
-        if (!$userId) {
-            return false;
-        }
-
-        // Формируем хеш-параметры как в документации
+        // Формируем хеш-параметры
         $hashParams = [
             'app_id' => (int)$appId,
             'user_id' => (int)$userId,
-            'request_id' => $payload, // ← именно так!
-            'ts' => (int)$ts,
+            'request_id' => $params['payload'],
+            'ts' => (int)$params['ts'],
         ];
 
         ksort($hashParams);
@@ -66,7 +63,17 @@ class VkController
         $computedSign = hash_hmac('sha256', $queryString, $secret, true);
         $computedSign = rtrim(strtr(base64_encode($computedSign), '+/', '-_'), '=');
 
-        return hash_equals($computedSign, $sign);
+        return hash_equals($computedSign, $params['sign']);
+    }
+
+    protected function getPayload(Req $request): array
+    {
+        $params = $request->getParsedBody();
+        if (!$params) {
+            return (array)parse_url($params, PHP_URL_QUERY);
+        }
+
+        return [];
     }
 
     protected function success(Res $response, array $data): MessageInterface|Res
