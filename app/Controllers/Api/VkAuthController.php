@@ -11,11 +11,6 @@ class VkAuthController extends VkController
 {
     public function auth(Req $request, Res $response): MessageInterface|Res
     {
-        // Для валидации подписи передаём все параметры, как есть
-        if (!$this->validateVkSign($request)) {
-            return $this->error($response, 'Invalid signature', 401);
-        }
-
         // Парсим data, чтобы получить user_id
         $data = $this->getPayload($request);
         $userId = (int)($data['user_id'] ?? 0);
