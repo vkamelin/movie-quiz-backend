@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace App\Helpers;
 
 use Psr\Http\Message\ResponseInterface as Res;
+use Slim\Psr7\Response as PsrResponse;
 
 /**
  * Утилиты для формирования HTTP-ответов.
@@ -32,14 +33,15 @@ final class Response
     /**
      * Возвращает ответ формата application/problem+json.
      *
-     * @param Res $res Объект ответа
      * @param int $status HTTP-статус
      * @param string $title Краткое описание проблемы
      * @param array $extra Дополнительные поля для тела ответа
      * @return Res Ответ с заголовком application/problem+json
      */
-    public static function problem(Res $res, int $status, string $title, array $extra = []): Res
+    public static function problem(int $status, string $title, array $extra = []): Res
     {
+        $res = new PsrResponse();
+
         $body = array_merge([
             'type' => 'about:blank',
             'title' => $title,
