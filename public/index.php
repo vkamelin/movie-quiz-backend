@@ -62,32 +62,19 @@ function registerRoutes(
     array $config,
     array $appConfig
 ): void {
-    // Dashboard routes
-    if (isset($config['dashboard'])) {
-        $dashboard = $config['dashboard'];
-        $prefix = '/dashboard';
-
-        $routeGroup = $app->group($prefix, function (\Slim\Routing\RouteCollectorProxy $g) use ($container, $dashboard, $appConfig) {
-            registerRouteGroup($g, $container, $dashboard['routes'], '');
+    foreach ($config as $prefix => $routeConfig) {
+        if (!isset($routeConfig['routes'])) {
+            continue;
+        }
+        
+        $prefixPath = '/' . ltrim($prefix, '/');
+        
+        $routeGroup = $app->group($prefixPath, function (\Slim\Routing\RouteCollectorProxy $g) use ($container, $routeConfig) {
+            registerRouteGroup($g, $container, $routeConfig['routes'], '');
         });
 
         // Add middleware to group (in reverse order for proper execution)
-        foreach (array_reverse($dashboard['middleware'] ?? []) as $middlewareClass) {
-            $routeGroup = $routeGroup->add($container->get($middlewareClass));
-        }
-    }
-
-    // API routes
-    if (isset($config['api'])) {
-        $api = $config['api'];
-        $prefix = '/api';
-
-        $routeGroup = $app->group($prefix, function (\Slim\Routing\RouteCollectorProxy $g) use ($container, $api, $appConfig) {
-            registerRouteGroup($g, $container, $api['routes'], '');
-        });
-
-        // Add middleware to group (in reverse order)
-        foreach (array_reverse($api['middleware'] ?? []) as $middlewareClass) {
+        foreach (array_reverse($routeConfig['middleware'] ?? []) as $middlewareClass) {
             $routeGroup = $routeGroup->add($container->get($middlewareClass));
         }
     }
@@ -122,6 +109,9 @@ function registerRouteGroup(
 
         // Nested group without middleware (routes only)
         if (is_string($key) && $key !== '' && isset($route['routes']) && !isset($route['middleware'])) {
+            $group->group($key, function (\Slim\Routing\RouteCollectorProxy $g) use ($container, $route) {
+                registerRouteGroup($g, $container, $route['routes'], $key);
+            });
             $group->group($key, function (\Slim\Routing\RouteCollectorProxy $g) use ($container, $route, $prefix) {
                 registerRouteGroup($g, $container, $route['routes'], $prefix . '/' . $key);
             });
@@ -130,23 +120,37 @@ function registerRouteGroup(
 
         // Nested routes without middleware (key can be '' or numeric)
         if (is_string($key) && isset($route[0]) && is_array($route[0])) {
-            registerRouteGroup($group, $container, $route, '');
+            registerRouteGroup($group, $container, $route, $prefix);
             continue;
         }
 
         // Regular route: ['METHOD', '/path', [Controller::class, 'method']]
+        // With middleware: ['METHOD', '/path', [Controller::class, 'method'], ['Middleware1', 'Middleware2']]
         if (is_array($route) && count($route) >= 3) {
             [$method, $path, $handler] = $route;
+            $routeMiddleware = $route[3] ?? [];
 
             if ($method === 'MAP') {
-                // MAP: ['MAP', ['GET', 'POST'], '/path', [Controller::class, 'method']]
+                // MAP: ['MAP', ['GET', 'POST'], '/path', [Controller::class, 'method'], ['Middleware1', 'Middleware2']]
                 $methods = $path;
                 $fullPath = $prefix . ($route[2] ?? '');
                 $fullHandler = $route[3] ?? $handler;
-                $group->map($methods, $fullPath, $fullHandler);
+                $routeMiddleware = $route[4] ?? [];
+                $routeObj = $group->map($methods, $fullPath, $fullHandler);
             } else {
                 $fullPath = $prefix . $path;
-                $group->$method($fullPath, $handler);
+                $routeObj = $group->$method($fullPath, $handler);
+            }
+            
+            // Apply middleware to individual route
+            if (!empty($routeMiddleware) && is_array($routeMiddleware)) {
+                foreach (array_reverse($routeMiddleware) as $middlewareClass) {
+                    try {
+                        $routeObj->add($container->get($middlewareClass));
+                    } catch (\DI\DependencyException|\DI\NotFoundException $e) {
+                        Logger::error($e->getMessage());
+                    }
+                }
             }
         }
     }
