@@ -24,26 +24,26 @@ final class TelegramInitDataMiddleware implements MiddlewareInterface
     /**
      * Валидирует init data и добавляет данные пользователя в запрос.
      *
-     * @param Req $req HTTP-запрос
+     * @param Req $request HTTP-запрос
      * @param Handler $handler Следующий обработчик
      * @return Res Ответ после обработки
      * @throws JsonException
      */
-    public function process(Req $req, Handler $handler): Res
+    public function process(Req $request, Handler $handler): Res
     {
         $init = '';
 
-        $auth = $req->getHeaderLine('Authorization');
+        $auth = $request->getHeaderLine('Authorization');
         if (preg_match('~^tma\s+(.+)$~i', $auth, $m)) {
             $init = $m[1];
         }
 
         if ($init === '') {
-            $init = $req->getHeaderLine('X-Telegram-Init-Data');
+            $init = $request->getHeaderLine('X-Telegram-Init-Data');
         }
 
         if ($init === '') {
-            $params = array_merge($req->getQueryParams(), (array)$req->getParsedBody());
+            $params = array_merge($request->getQueryParams(), (array)$request->getParsedBody());
             $init = $params['initData'] ?? '';
         }
 
@@ -75,10 +75,10 @@ final class TelegramInitDataMiddleware implements MiddlewareInterface
             $telegramUser['language_code'] = $user['language_code'];
         }
 
-        $req = $req
+        $request = $request
             ->withAttribute('telegramUser', $telegramUser)
             ->withAttribute('rawInitData', $init);
 
-        return $handler->handle($req);
+        return $handler->handle($request);
     }
 }

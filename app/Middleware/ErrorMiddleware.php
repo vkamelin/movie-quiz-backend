@@ -40,19 +40,19 @@ final class ErrorMiddleware implements MiddlewareInterface
     /**
      * Перехватывает ошибки и формирует ответ.
      *
-     * @param Req $req HTTP-запрос
+     * @param Req $request HTTP-запрос
      * @param Handler $handler Следующий обработчик
      * @return Res Ответ после обработки
      */
-    public function process(Req $req, Handler $handler): Res
+    public function process(Req $request, Handler $handler): Res
     {
         try {
-            return $handler->handle($req);
+            return $handler->handle($request);
         } catch (Throwable $e) {
             Logger::error($e->getMessage(), ['exception' => $e]);
 
-            $path = $req->getUri()->getPath();
-            $accept = $req->getHeaderLine('Accept');
+            $path = $request->getUri()->getPath();
+            $accept = $request->getHeaderLine('Accept');
             $wantsJson = str_starts_with($path, '/api') || str_contains($accept, 'application/json');
 
             if ($wantsJson) {

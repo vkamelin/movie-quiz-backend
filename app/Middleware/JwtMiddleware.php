@@ -32,19 +32,19 @@ final class JwtMiddleware implements MiddlewareInterface
     /**
      * Проверяет JWT и добавляет его данные в запрос.
      *
-     * @param Req $req HTTP-запрос
+     * @param Req $request HTTP-запрос
      * @param Handler $handler Следующий обработчик
      * @return Res Ответ после проверки
      */
-    public function process(Req $req, Handler $handler): Res
+    public function process(Req $request, Handler $handler): Res
     {
-        $auth = $req->getHeaderLine('Authorization');
+        $auth = $request->getHeaderLine('Authorization');
         if (!preg_match('~^Bearer\s+(.+)$~i', $auth, $m)) {
             return Response::problem(new \Slim\Psr7\Response(), 401, 'Unauthorized');
         }
         try {
             $decoded = JWT::decode($m[1], new Key($this->cfg['secret'], $this->cfg['alg']));
-            return $handler->handle($req->withAttribute('jwt', (array)$decoded));
+            return $handler->handle($request->withAttribute('jwt', (array)$decoded));
         } catch (Throwable $e) {
             return Response::problem(new \Slim\Psr7\Response(), 401, 'Invalid token');
         }

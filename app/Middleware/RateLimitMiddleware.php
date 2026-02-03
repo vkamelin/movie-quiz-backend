@@ -33,20 +33,20 @@ final class RateLimitMiddleware implements MiddlewareInterface
     /**
      * Применяет лимит запросов на основе IP или Telegram пользователя.
      *
-     * @param Req $req HTTP-запрос
+     * @param Req $request HTTP-запрос
      * @param Handler $handler Следующий обработчик
      * @return Res Ответ после проверки
      */
-    public function process(Req $req, Handler $handler): Res
+    public function process(Req $request, Handler $handler): Res
     {
         $bucket = ($this->cfg['bucket'] ?? 'ip') === 'user' ? 'user' : 'ip';
         $limit = (int)($this->cfg['limit'] ?? 60);
         $windowSec = (int)($this->cfg['window_sec'] ?? 60);
         $prefix = (string)($this->cfg['redis_prefix'] ?? 'sw:');
 
-        $server = $req->getServerParams();
+        $server = $request->getServerParams();
         $clientIp = $server['REMOTE_ADDR'] ?? 'anon';
-        $telegramUser = $req->getAttribute('telegramUser') ?? [];
+        $telegramUser = $request->getAttribute('telegramUser') ?? [];
         $userId = is_array($telegramUser) ? ($telegramUser['id'] ?? null) : null;
 
         $id = ($bucket === 'user' && $userId) ? ('u:' . (string)$userId) : ('ip:' . (string)$clientIp);
@@ -98,14 +98,14 @@ final class RateLimitMiddleware implements MiddlewareInterface
                     ->withHeader('X-RateLimit-Window', (string)$windowSec);
             }
 
-            $res = $handler->handle($req);
+            $res = $handler->handle($request);
             return $res
                 ->withHeader('X-RateLimit-Limit', (string)$limit)
                 ->withHeader('X-RateLimit-Remaining', (string)$remaining)
                 ->withHeader('X-RateLimit-Window', (string)$windowSec);
         } catch (\Throwable) {
             // Fail-open: если Redis недоступен, не блокируем запросы
-            return $handler->handle($req);
+            return $handler->handle($request);
         }
     }
 }

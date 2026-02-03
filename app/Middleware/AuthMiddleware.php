@@ -22,17 +22,17 @@ final class AuthMiddleware implements MiddlewareInterface
      * Проверяет наличие user_id в сессии.
      * Если пользователь не авторизован, перенаправляет на /dashboard/login.
      *
-     * @param Req $req HTTP-запрос
+     * @param Req $request HTTP-запрос
      * @param Handler $handler Следующий обработчик
      * @return Res Ответ после проверки
      */
-    public function process(Req $req, Handler $handler): Res
+    public function process(Req $request, Handler $handler): Res
     {
-        $uri = $req->getUri()->getPath();
+        $uri = $request->getUri()->getPath();
 
         // Исключаем маршруты логина/логаута из проверки
         if ($uri === '/dashboard/login' || $uri === '/dashboard/logout') {
-            return $handler->handle($req);
+            return $handler->handle($request);
         }
 
         if (empty($_SESSION['user_id'])) {
@@ -40,6 +40,6 @@ final class AuthMiddleware implements MiddlewareInterface
             return $res->withHeader('Location', '/dashboard/login')->withStatus(302);
         }
 
-        return $handler->handle($req);
+        return $handler->handle($request);
     }
 }

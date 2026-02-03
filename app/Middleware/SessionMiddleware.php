@@ -37,14 +37,14 @@ final class SessionMiddleware implements MiddlewareInterface
     /**
      * Запускает сессию и передаёт запрос дальше.
      *
-     * @param Req $req HTTP-запрос
+     * @param Req $request HTTP-запрос
      * @param Handler $handler Следующий обработчик
      * @return Res Ответ после обработки
      */
-    public function process(Req $req, Handler $handler): Res
+    public function process(Req $request, Handler $handler): Res
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
-            $sid = $req->getCookieParams()[$this->name] ?? null;
+            $sid = $request->getCookieParams()[$this->name] ?? null;
             if ($sid !== null && !preg_match('/^[A-Za-z0-9,-]{1,128}$/', $sid)) {
                 session_id('');
             }
@@ -54,7 +54,7 @@ final class SessionMiddleware implements MiddlewareInterface
         }
 
         try {
-            return $handler->handle($req);
+            return $handler->handle($request);
         } finally {
             if (session_status() === PHP_SESSION_ACTIVE) {
                 session_write_close();
