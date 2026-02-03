@@ -129,11 +129,12 @@ return [
 
     'api' => [
         'routes' => [
-            ['POST', '/vk/auth', [VkAuthController::class, 'auth']],
+            ['POST', '/vk/auth', [VkAuthController::class, 'auth'], [\App\Middleware\RateLimitMiddleware::class, \App\Middleware\VkSignatureMiddleware::class]],
             'vk' => [
                 'middleware' => [
                     \App\Middleware\JwtMiddleware::class,
                     \App\Middleware\RateLimitMiddleware::class,
+                    \App\Middleware\VkSignatureMiddleware::class,
                 ],
                 'routes' => [
 
