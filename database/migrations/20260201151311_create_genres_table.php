@@ -8,7 +8,7 @@ final class CreateGenresTable extends AbstractMigration
 {
     public function up(): void
     {
-        $this->execute("CREATE TABLE genres (
+        $this->execute("CREATE TABLE `genres` (
             `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
             `name` VARCHAR(50) NOT NULL
         );");
@@ -16,6 +16,6 @@ final class CreateGenresTable extends AbstractMigration
 
     public function down(): void
     {
-        $this->execute("DROP TABLE genres;");
+        $this->execute("DROP TABLE `genres`;");
     }
 }
