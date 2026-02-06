@@ -49,8 +49,8 @@ final class MoviesController
         $searchValue = $p['search']['value'] ?? '';
         $whereSql = '';
         if ($searchValue !== '') {
-            $whereSql = 'WHERE m.title LIKE :search OR m.title_original LIKE :search';
-            $params['search'] = '%' . $searchValue . '%';
+            $whereSql = 'WHERE m.title LIKE :search_title OR m.title_original LIKE :search_title';
+            $params['search_title'] = '%' . $searchValue . '%';
         }
 
         $sql = "SELECT 
@@ -86,7 +86,9 @@ final class MoviesController
             $stmt->bindValue(':limit', $length, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $start, PDO::PARAM_INT);
         }
+        
         $stmt->execute();
+        $rows = $stmt->fetchAll();
         $rows = $stmt->fetchAll();
 
         $countSql = "SELECT COUNT(DISTINCT m.id) 
@@ -314,7 +316,7 @@ final class MoviesController
         $placeholders = str_repeat('?,', count($movieIds) - 1) . '?';
         $checkSql = "SELECT id, status FROM movies WHERE id IN ($placeholders)";
         $checkStmt = $this->db->prepare($checkSql);
-        $checkStmt->execute($movieIds);
+        $checkStmt->execute(array_values($movieIds));
         $movies = $checkStmt->fetchAll();
 
         if (count($movies) !== count($movieIds)) {
@@ -344,8 +346,11 @@ final class MoviesController
                 }
 
                 if ($newStatus !== $movie['status']) {
-                    $updateStmt = $this->db->prepare('UPDATE movies SET status = ? WHERE id = ?');
-                    $updateStmt->execute([$newStatus, $movie['id']]);
+                    $updateStmt = $this->db->prepare('UPDATE movies SET status = :status WHERE id = :id');
+                    $updateStmt->execute([
+                        'status' => $newStatus,
+                        'id' => $movie['id']
+                    ]);
                     $processed++;
                 }
             }
