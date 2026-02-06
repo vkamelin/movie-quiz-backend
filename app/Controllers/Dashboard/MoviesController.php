@@ -87,9 +87,7 @@ final class MoviesController
             $stmt->bindValue(':limit', $length, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $start, PDO::PARAM_INT);
         }
-        
         $stmt->execute();
-        $rows = $stmt->fetchAll();
         $rows = $stmt->fetchAll();
 
         $countSql = "SELECT COUNT(DISTINCT m.id) 
