@@ -49,7 +49,7 @@ final class MoviesController
         $searchValue = $p['search']['value'] ?? '';
         $whereSql = '';
         if ($searchValue !== '') {
-            $whereSql = 'WHERE m.title LIKE :search OR m.title_original LIKE :search OR m.year LIKE :search';
+            $whereSql = 'WHERE m.title LIKE :search OR m.title_original LIKE :search';
             $params['search'] = '%' . $searchValue . '%';
         }
 
